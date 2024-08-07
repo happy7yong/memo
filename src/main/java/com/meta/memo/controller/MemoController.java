@@ -41,4 +41,19 @@ public class MemoController {
         List<MemoResponseDto> responseDtoList = memoList.values().stream().map(MemoResponseDto::new).toList();
         return  responseDtoList;
     }
+
+    @PutMapping("/memos/{id}")
+    public Long updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto memoRequestDto){
+        if(memoList.containsKey(id)) {
+            Memo memo = memoList.get(id);
+
+            memo.update(memoRequestDto);
+            return memo.getId();
+
+        }else {
+
+            throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
+        }
+
+    }
 }
