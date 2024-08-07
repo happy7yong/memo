@@ -18,4 +18,10 @@ public class Memo {
         this.contents = memoRequestDto.getContents();
 
     }
+
+    public void update(MemoRequestDto memoRequestDto){
+        this.username = memoRequestDto.getUsername();
+        this.contents = memoRequestDto.getContents();
+
+    }
 }

@@ -3,15 +3,9 @@ package com.meta.memo.controller;
 import com.meta.memo.dto.MemoRequestDto;
 import com.meta.memo.dto.MemoResponseDto;
 import com.meta.memo.entity.Memo;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -30,6 +24,7 @@ public class MemoController {
 
         // Memo 최대 번호 확인
         Long maxId = memoList.size() > 0 ? Collections.max(memoList.keySet()) + 1 : 1;
+        memo.setId(maxId);
 
         // DB 저장
         memoList.put(memo.getId(), memo);
@@ -37,5 +32,28 @@ public class MemoController {
         // Entity-> ResponseDto
         MemoResponseDto memoResponseDto = new MemoResponseDto(memo);
         return memoResponseDto;
+
+    }
+
+    @GetMapping("/memos")
+    public List<MemoResponseDto> getMemos(){
+        // Map to List
+        List<MemoResponseDto> responseDtoList = memoList.values().stream().map(MemoResponseDto::new).toList();
+        return  responseDtoList;
+    }
+
+    @PutMapping("/memos/{id}")
+    public Long updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto memoRequestDto){
+        if(memoList.containsKey(id)) {
+            Memo memo = memoList.get(id);
+
+            memo.update(memoRequestDto);
+            return memo.getId();
+
+        }else {
+
+            throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
+        }
+
     }
 }
