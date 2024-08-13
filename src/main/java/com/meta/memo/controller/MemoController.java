@@ -3,6 +3,7 @@ package com.meta.memo.controller;
 import com.meta.memo.dto.MemoRequestDto;
 import com.meta.memo.dto.MemoResponseDto;
 import com.meta.memo.entity.Memo;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -74,6 +75,40 @@ public class MemoController {
                 return new MemoResponseDto(id, username, contents);
             }
         });
+    }
+
+    @PutMapping("/memos/{id}")
+    public Long updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto memoRequestDto) {
+        Memo memo = findById(id);
+        if(memo != null) {
+            String sql = "UPDATE memo SET username = ?, contents = ? WHERE id = ?";
+
+            jdbcTemplate.update(sql, memoRequestDto.getUsername(), memoRequestDto.getContents(), id);
+
+            return id;
+        } else {
+            throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다");
+        }
+    }
+
+        /*
+        * 데이터 존재 확인 메서드
+        *  @param id
+        * @return Memo
+        * */
+    private Memo findById(Long id) {
+        String sql = "SELECT * FROM memo WHERE id = ?";
+
+        return jdbcTemplate.query(sql, resultSet -> {
+            if(resultSet.next()) {
+                Memo memo = new Memo();
+                memo.setUsername(resultSet.getString("username"));
+                memo.setContents(resultSet.getString("contents"));
+                return memo;
+            } else {
+                return null;
+            }
+        }, id);
     }
 
 
