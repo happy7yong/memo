@@ -91,11 +91,11 @@ public class MemoController {
         }
     }
 
-        /*
-        * 데이터 존재 확인 메서드
-        *  @param id
-        * @return Memo
-        * */
+    /*
+     * 데이터 존재 확인 메서드
+     *  @param id
+     * @return Memo
+     * */
     private Memo findById(Long id) {
         String sql = "SELECT * FROM memo WHERE id = ?";
 
@@ -111,41 +111,17 @@ public class MemoController {
         }, id);
     }
 
+    @DeleteMapping("/memos/{id}")
+    public Long deleteMemo(@PathVariable Long id){
+        Memo memo = findById(id);
 
+        if(memo != null){
+            String sql = "DELETE FROM memo WHERE id = ?";
+            jdbcTemplate.update(sql, id);
 
-//    @GetMapping("/memos")
-//    public List<MemoResponseDto> getMemos(){
-//        // Map to List
-//        List<MemoResponseDto> responseDtoList = memoList.values().stream().map(MemoResponseDto::new).toList();
-//        return  responseDtoList;
-//    }
-//
-//    @PutMapping("/memos/{id}")
-//    public Long updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto memoRequestDto){
-//        if(memoList.containsKey(id)) {
-//            Memo memo = memoList.get(id);
-//
-//            memo.update(memoRequestDto);
-//            return memo.getId();
-//
-//        }else {
-//
-//            throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
-//        }
-//
-//    }
-//
-//    //DELETE
-//    @DeleteMapping("/memos/{id}")
-//    public Long deleteMemo(@PathVariable Long id) {
-//        // 특정 id의 메모가 데이터베이스에 존재하는지 확인
-//        if(memoList.containsKey(id)){
-//            memoList.remove(id);
-//            return id;
-//        }else {
-//
-//            throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
-//        }
-//    }
-//
+            return id;
+        }else {
+            throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
+        }
+    }
 }
