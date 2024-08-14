@@ -14,12 +14,14 @@ import java.util.List;
 
 
 public class MemoController {
+    //멤버변수선언
+    private final MemoService memoService;
 
-    private final JdbcTemplate jdbcTemplate;
-
-    public MemoController(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    //생성자 : MemoController가 생성될 때 생성됨.
+    public MemoController(JdbcTemplate jdbcTemplate){
+        this.memoService = new MemoService(jdbcTemplate);
     }
+
 
     /**
      *CREATE
@@ -30,7 +32,6 @@ public class MemoController {
     //CREATE
     @PostMapping("/memos")
     public MemoResponseDto createMemo(@RequestBody MemoRequestDto memoRequestDto){
-        MemoService memoService = new MemoService(jdbcTemplate);
         return memoService.createMemo(memoRequestDto);
     }
 
@@ -41,7 +42,6 @@ public class MemoController {
 
     @GetMapping("/memos")
     public List<MemoResponseDto> getMemos(){
-        MemoService memoService = new MemoService(jdbcTemplate);
         return memoService.getMemos();
     }
 
@@ -50,7 +50,6 @@ public class MemoController {
 
     @PutMapping("/memos/{id}")
     public Long updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto memoRequestDto) {
-        MemoService memoService = new MemoService(jdbcTemplate);
         return memoService.updateMemo(id, memoRequestDto);
     }
 
