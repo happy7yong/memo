@@ -5,20 +5,17 @@ import com.meta.memo.dto.MemoResponseDto;
 import com.meta.memo.entity.Memo;
 import com.meta.memo.repository.MemoRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 public class MemoService {
 
+    private MemoRepository memoRepository;
 
-    private final JdbcTemplate jdbcTemplate;
-
-    public MemoService(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public MemoService(JdbcTemplate jdbcTemplate){
+        this.memoRepository = new MemoRepository(jdbcTemplate);
     }
+
 
     /**
      *CREATE
