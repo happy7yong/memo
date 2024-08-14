@@ -3,57 +3,59 @@ package com.meta.memo.controller;
 import com.meta.memo.dto.MemoRequestDto;
 import com.meta.memo.dto.MemoResponseDto;
 import com.meta.memo.entity.Memo;
+import com.meta.memo.service.MemoService;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
 
 
 public class MemoController {
+    //멤버변수선언
+    private final MemoService memoService;
 
-    // 임시 DB
-    private final Map<Long, Memo> memoList = new HashMap<>();
+    //생성자 : MemoController가 생성될 때 생성됨.
+    public MemoController(MemoService memoService){
+        this.memoService = memoService;
+    }
 
 
+    /**
+     *CREATE
+     * @param memoRequestDto
+     * @return
+     */
+
+    //CREATE
     @PostMapping("/memos")
     public MemoResponseDto createMemo(@RequestBody MemoRequestDto memoRequestDto){
-        //RequestDto -> Entity
-        Memo memo = new Memo(memoRequestDto);
-
-        // Memo 최대 번호 확인
-        Long maxId = memoList.size() > 0 ? Collections.max(memoList.keySet()) + 1 : 1;
-        memo.setId(maxId);
-
-        // DB 저장
-        memoList.put(memo.getId(), memo);
-
-        // Entity-> ResponseDto
-        MemoResponseDto memoResponseDto = new MemoResponseDto(memo);
-        return memoResponseDto;
-
+        return memoService.createMemo(memoRequestDto);
     }
+
+
+    /**
+     * Read
+    * */
 
     @GetMapping("/memos")
     public List<MemoResponseDto> getMemos(){
-        // Map to List
-        List<MemoResponseDto> responseDtoList = memoList.values().stream().map(MemoResponseDto::new).toList();
-        return  responseDtoList;
+        return memoService.getMemos();
     }
 
+
+
+
     @PutMapping("/memos/{id}")
-    public Long updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto memoRequestDto){
-        if(memoList.containsKey(id)) {
-            Memo memo = memoList.get(id);
+    public Long updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto memoRequestDto) {
+        return memoService.updateMemo(id, memoRequestDto);
+    }
 
-            memo.update(memoRequestDto);
-            return memo.getId();
 
-        }else {
-
-            throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
-        }
-
+    @DeleteMapping("/memos/{id}")
+    public Long deleteMemo(@PathVariable Long id){
+       return memoService.deleteMemo(id);
     }
 }
