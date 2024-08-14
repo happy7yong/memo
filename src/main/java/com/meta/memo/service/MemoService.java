@@ -5,15 +5,17 @@ import com.meta.memo.dto.MemoResponseDto;
 import com.meta.memo.entity.Memo;
 import com.meta.memo.repository.MemoRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class MemoService {
 
     private MemoRepository memoRepository;
 
-    public MemoService(JdbcTemplate jdbcTemplate){
-        this.memoRepository = new MemoRepository(jdbcTemplate);
+    public MemoService(MemoRepository memoRepository){
+        this.memoRepository = memoRepository;
     }
 
 
@@ -28,7 +30,6 @@ public class MemoService {
         Memo memo = new Memo(memoRequestDto);
 
         //DB저장
-        MemoRepository memoRepository = new MemoRepository(jdbcTemplate);
         Memo saveMemo = memoRepository.save(memo);
 
         // Entity-> ResponseDto
@@ -39,13 +40,11 @@ public class MemoService {
     }
 
     public List<MemoResponseDto> getMemos() {
-        MemoRepository memoRepository = new MemoRepository(jdbcTemplate);
         List<MemoResponseDto> memoResponseDtos = memoRepository.findAll();
         return memoResponseDtos;
     }
 
     public Long updateMemo(Long id, MemoRequestDto memoRequestDto) {
-        MemoRepository memoRepository = new MemoRepository(jdbcTemplate);
 
 
         Memo memo = memoRepository.findById(id);
@@ -61,7 +60,6 @@ public class MemoService {
     }
 
     public Long deleteMemo(Long id) {
-        MemoRepository memoRepository = new MemoRepository(jdbcTemplate);
 
 
         Memo memo = memoRepository.findById(id);

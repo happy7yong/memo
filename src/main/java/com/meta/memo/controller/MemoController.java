@@ -18,8 +18,8 @@ public class MemoController {
     private final MemoService memoService;
 
     //생성자 : MemoController가 생성될 때 생성됨.
-    public MemoController(JdbcTemplate jdbcTemplate){
-        this.memoService = new MemoService(jdbcTemplate);
+    public MemoController(MemoService memoService){
+        this.memoService = memoService;
     }
 
 
@@ -56,7 +56,6 @@ public class MemoController {
 
     @DeleteMapping("/memos/{id}")
     public Long deleteMemo(@PathVariable Long id){
-       MemoService memoService = new MemoService(jdbcTemplate);
        return memoService.deleteMemo(id);
     }
 }
