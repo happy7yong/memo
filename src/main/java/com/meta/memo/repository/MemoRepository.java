@@ -3,6 +3,7 @@ package com.meta.memo.repository;
 import com.meta.memo.dto.MemoRequestDto;
 import com.meta.memo.dto.MemoResponseDto;
 import com.meta.memo.entity.Memo;
+import jakarta.transaction.Transactional;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -78,6 +79,15 @@ public class MemoRepository {
         String sql = "DELETE FROM memo WHERE id = ?";
         jdbcTemplate.update(sql, id);
 
+    }
+
+
+    @Transactional
+    public void createMemo(EntityManager em){
+        Memo memo = em.find(Memo.class, 1);
+        memo.setContents("@Transactional 테스트 중");
+        memo.setUsername("Meta");
+        System.out.println("create 메소드 종료");
     }
 
 
